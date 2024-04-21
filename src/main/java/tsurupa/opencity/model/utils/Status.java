@@ -1,2 +1,8 @@
-package tsurupa.opencity.model.utils;public class Status {
+package tsurupa.opencity.model.utils;
+
+public enum Status {
+
+    verification,
+    activ,
+    archive,
 }

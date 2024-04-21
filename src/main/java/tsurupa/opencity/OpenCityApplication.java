@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class OpenCityApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OpenCityApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(OpenCityApplication.class, args);
+    }
 
 }
