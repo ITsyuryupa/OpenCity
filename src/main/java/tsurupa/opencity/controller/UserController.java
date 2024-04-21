@@ -74,7 +74,7 @@ public class UserController {
         if(userRepository.existsByEmail(newEmail)){
             return new ResponseEntity<>("Почта занята", HttpStatus.BAD_REQUEST);
         }
-        String[] tokenArr = CheckPermission.tokenВecryption(token);
+        String[] tokenArr = CheckPermission.tokenDecryption(token);
         String email = tokenArr[0];
         String password = tokenArr[1];
 
@@ -94,7 +94,7 @@ public class UserController {
     @PutMapping("/update/password")
     public ResponseEntity<?> updateUserPassword(@RequestParam(name = "userEmail") String userEmail, @RequestParam(name = "newPassword") String newPassword, @RequestHeader("token") String token) {
 
-        String[] tokenArr = CheckPermission.tokenВecryption(token);
+        String[] tokenArr = CheckPermission.tokenDecryption(token);
         String email = tokenArr[0];
         String password = tokenArr[1];
 
@@ -115,7 +115,7 @@ public class UserController {
     @PutMapping("/update/role")
     public ResponseEntity<?> updateUserRole(@RequestParam(name = "userEmail") String userEmail, @RequestParam(name = "newRole") Integer newRole, @RequestHeader("token") String token) {
 
-        String[] tokenArr = CheckPermission.tokenВecryption(token);
+        String[] tokenArr = CheckPermission.tokenDecryption(token);
         String email = tokenArr[0];
         String password = tokenArr[1];
 

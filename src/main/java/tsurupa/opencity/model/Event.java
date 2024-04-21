@@ -1,5 +1,7 @@
 package tsurupa.opencity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
@@ -39,13 +41,19 @@ public class Event {
 
     private Status status;
 
-//        @ManyToOne
-//    @JoinColumn(name="update_user_id", nullable=false)
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name="owner_user_id", nullable=false)
+    private User user;
+
+    @JsonProperty("user")
+    public Long getUserId() {
+        return user != null ? user.getId() : null;
+    }
 
     @OneToMany
     @JoinColumn(name = "event_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Set<ReportEvent> reportEventSet;
 
     public void addReportEvent(ReportEvent reportEvent) {
@@ -66,16 +74,16 @@ public class Event {
 //    @OnDelete(action = OnDeleteAction.CASCADE)
 //    private Set<FavoriteEvent> favoriteEventSet;
 
-    public void addFavoriteEvent(ReportEvent reportEvent) {
-        if (reportEventSet == null) {
-            reportEventSet = new HashSet<>();
-        }
-        reportEventSet.add(reportEvent);
-    }
-
-    public void removeFavoriteEvent(ReportEvent reportEvent) {
-        if (reportEventSet != null) {
-            reportEventSet.remove(reportEvent);
-        }
-    }
+//    public void addFavoriteEvent(ReportEvent reportEvent) {
+//        if (reportEventSet == null) {
+//            reportEventSet = new HashSet<>();
+//        }
+//        reportEventSet.add(reportEvent);
+//    }
+//
+//    public void removeFavoriteEvent(ReportEvent reportEvent) {
+//        if (reportEventSet != null) {
+//            reportEventSet.remove(reportEvent);
+//        }
+//    }
 }

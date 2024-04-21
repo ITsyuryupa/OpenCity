@@ -1,5 +1,6 @@
 package tsurupa.opencity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
@@ -21,6 +22,7 @@ public class User {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @Column(name = "registation_date")

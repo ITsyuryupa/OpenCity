@@ -11,7 +11,18 @@ public class CheckPermission {
         return user.getEmail() + "$" + user.getPassword();
     }
 
-    public static String[] tokenВecryption(String token){
+    public static boolean auth(UserRepository userRepository, String token){
+        String[] parts = tokenDecryption(token);
+
+        // Получение email и пароля
+        String email = parts[0];
+        String password = parts[1];
+
+        Optional<User> userAuthData = userRepository.findByEmail(email);
+        return userAuthData.isPresent() && userAuthData.get().getPassword().equals(password);
+    }
+
+    public static String[] tokenDecryption(String token){
         String[] parts = token.split("\\$");
 
         // Получение email и пароля
@@ -21,7 +32,7 @@ public class CheckPermission {
         return parts;
     }
     public static boolean himself(UserRepository userRepository,Optional<User> user, String token){
-        String[] parts = tokenВecryption(token);
+        String[] parts = tokenDecryption(token);
 
         // Получение email и пароля
         String email = parts[0];
@@ -41,7 +52,7 @@ public class CheckPermission {
     }
 
     public static boolean himself_moderator(UserRepository userRepository,Optional<User> user, String token){
-        String[] parts = tokenВecryption(token);
+        String[] parts = tokenDecryption(token);
 
         // Получение email и пароля
         String email = parts[0];
@@ -61,7 +72,7 @@ public class CheckPermission {
     }
 
     public static boolean himself_admin(UserRepository userRepository, Optional<User> user, String token){
-        String[] parts = tokenВecryption(token);
+        String[] parts = tokenDecryption(token);
 
         // Получение email и пароля
         String email = parts[0];
