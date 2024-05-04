@@ -71,6 +71,26 @@ public class CheckPermission {
         return true;
     }
 
+    public static boolean himself_moderator(UserRepository userRepository,User user, String token){
+        String[] parts = tokenDecryption(token);
+
+        // Получение email и пароля
+        String email = parts[0];
+        String password = parts[1];
+
+        Optional<User> userAuthData = userRepository.findByEmail(email);
+        if(userAuthData.isPresent() && userAuthData.get().getPassword().equals(password)){
+            if(!user.getEmail().equals(userAuthData.get().getEmail())){
+                if(userAuthData.get().getRole().getValue() < 1){
+                    return false;
+                }
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
+
     public static boolean himself_admin(UserRepository userRepository, Optional<User> user, String token){
         String[] parts = tokenDecryption(token);
 

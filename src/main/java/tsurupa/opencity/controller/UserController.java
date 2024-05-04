@@ -166,14 +166,17 @@ public class UserController {
         }
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") long id) {
-//        try {
-//            userRepository.deleteById(id);
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") long id, @RequestHeader("token") String token) {
+        try {
+            if(!CheckPermission.himself_admin(userRepository, userRepository.findById(id), token)){
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            userRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

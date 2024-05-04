@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 @Table
 @Data
-public class Event {
+public class Community {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,15 +28,7 @@ public class Event {
 
     private String description;
 
-    private String address;
-
-    private Date datetime_start;
-
-    private Date datetime_end;
-
-    private Double price_min;
-
-    private Double price_max;
+    private String contact_info;
 
     private Tag tag;
 
@@ -54,3 +46,4 @@ public class Event {
     }
 
 }
+

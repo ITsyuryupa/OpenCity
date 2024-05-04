@@ -1,12 +1,15 @@
 package tsurupa.opencity.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import tsurupa.opencity.model.utils.Role;
 
@@ -22,7 +25,7 @@ public class User {
 
     private String email;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "registation_date")
@@ -30,19 +33,20 @@ public class User {
 
     private Role role;
 
-    @OneToMany
-    @JoinColumn(name = "owner_user_id")
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Event> eventSet;
 
-    @OneToMany
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private Set<ReportEvent> reportEventSet;
+    private Set<Report> reports = new HashSet<>();
 
-//    @OneToMany(mappedBy="user")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private Set<FavoriteEvent> favoriteEventSet;
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Photo> photos = new HashSet<>();
 
 }
 

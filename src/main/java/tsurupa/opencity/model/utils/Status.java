@@ -16,4 +16,13 @@ public enum Status {
         return value;
     }
 
+    public static Status getStatusByValue(int value) {
+        for (Status status : Status.values()) {
+            if (status.getValue() == value) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("No status found with value: " + value);
+    }
+
 }

@@ -5,10 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tsurupa.opencity.model.Event;
+import tsurupa.opencity.model.Photo;
+import tsurupa.opencity.model.Report;
 import tsurupa.opencity.model.User;
-import tsurupa.opencity.model.utils.Role;
+import tsurupa.opencity.model.utils.EntityType;
 import tsurupa.opencity.model.utils.Status;
+import tsurupa.opencity.model.utils.Tag;
 import tsurupa.opencity.repository.EventRepository;
+import tsurupa.opencity.repository.PhotoRepository;
+import tsurupa.opencity.repository.ReportRepository;
 import tsurupa.opencity.repository.UserRepository;
 import tsurupa.opencity.service.CheckPermission;
 
@@ -25,6 +30,12 @@ public class EventController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
+
+    @Autowired
+    private PhotoRepository photoRepository;
 
     @PostMapping("/create")
     public ResponseEntity<?> createEvent(@RequestBody Event event, @RequestHeader String token) {
@@ -57,6 +68,7 @@ public class EventController {
                     return new ResponseEntity<>( "Datetime_end cannot be null", HttpStatus.BAD_REQUEST);
                 }
 
+
                 Event newEvent = new Event();
                 newEvent.setTitle(event.getTitle());
                 newEvent.setDescription(event.getDescription());
@@ -68,6 +80,11 @@ public class EventController {
                 newEvent.setUpdate_datetime(new Date());
                 newEvent.setUser(userAuthData.get());
                 newEvent.setStatus(Status.verification);
+                if(event.getTag() == null){
+                    newEvent.setTag(Tag.другое);
+                }else   {
+                    newEvent.setTag(event.getTag());
+                }
 
                 eventRepository.save(newEvent);
                 return new ResponseEntity<>("Событие создано", HttpStatus.OK);
@@ -81,12 +98,25 @@ public class EventController {
 
     }
 
-    @GetMapping("/all/active")
-    public ResponseEntity<?> getAllActivEvent(@RequestHeader("token") String token) {
+    @GetMapping("/all/status/{status}")
+    public ResponseEntity<?> getAllEventByStatusValue(@PathVariable("status") Integer status, @RequestHeader("token") String token) {
         try {
-            if(!CheckPermission.auth(userRepository, token)){
-                return new ResponseEntity<>("Пользователь не аторизирован", HttpStatus.FORBIDDEN);
+            if(!CheckPermission.moderator(userRepository, token)){
+                return new ResponseEntity<>("Отказано в доступе", HttpStatus.FORBIDDEN);
             }
+
+            List<Event> events = eventRepository.findAllEventByStatus(Status.getStatusByValue(status));
+            return new ResponseEntity<>(events, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/all/active")
+    public ResponseEntity<?> getAllActivEvent() {
+        try {
             List<Event> events = eventRepository.findAllByStatus(Status.activ);
             return new ResponseEntity<>(events, HttpStatus.OK);
 
@@ -96,27 +126,104 @@ public class EventController {
         }
     }
 
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<?> updateHotel(@PathVariable("id") long id, @RequestBody Event event) {
-//        Optional<Hotel> hotelData = hotelRepository.findById(id);
-//
-//        if (hotelData.isPresent()) {
-//            if (hotel.getCity().equals("") || hotel.getName().equals("") || hotel.getEmail().equals("") || hotel.getCoordinates().equals("")
-//                    || hotel.getDescription().equals("") || hotel.getStreet().equals("") || hotel.getHouseNumber().equals(null) || hotel.getCountry().equals("")) {
-//                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//            }
-//            Hotel _hotel = hotelData.get();
-//            _hotel.setCity(hotel.getCity());
-//            _hotel.setCountry(hotel.getCountry());
-//            _hotel.setDescription(hotel.getDescription());
-//            _hotel.setHouseNumber(hotel.getHouseNumber());
-//            _hotel.setStreet(hotel.getStreet());
-//            _hotel.setCoordinates(hotel.getCoordinates());
-//            _hotel.setEmail(hotel.getEmail());
-//            _hotel.setName(hotel.getName());
-//            return new ResponseEntity<>(hotelRepository.save(_hotel), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @GetMapping("/all/my/status/{status}")
+    public ResponseEntity<?> getMyEventByStatusValue(@PathVariable("status") Integer status, @RequestHeader("token") String token) {
+        try {
+            if(!CheckPermission.auth(userRepository, token)){
+                return new ResponseEntity<>("Пользователь не аторизирован", HttpStatus.FORBIDDEN);
+            }
+            String[] parts = CheckPermission.tokenDecryption(token);
+            Optional<User> user = userRepository.findByEmail(parts[0]);
+            List<Event> events = eventRepository.findAllEventByUserAndStatus(user.get(), Status.getStatusByValue(status));
+            return new ResponseEntity<>(events, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getEventById(@PathVariable("id") long id, @RequestHeader String token) {
+        try {
+            Optional<Event> event = eventRepository.findById(id);
+
+
+            return new ResponseEntity<>(event.get(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateEvent(@PathVariable("id") long id, @RequestBody Event updatedEvent, @RequestHeader String token) {
+        Optional<Event> eventData = eventRepository.findById(id);
+
+        if (eventData.isPresent() && CheckPermission.himself_moderator(userRepository, eventData.get().getUser(), token)) {
+            Event existingEvent = eventData.get();
+
+            // Проверка на пустые значения или нулевые поля
+            if (updatedEvent.getTitle() == null || updatedEvent.getTitle().isEmpty() ||
+                    updatedEvent.getDescription() == null || updatedEvent.getDescription().isEmpty() ||
+                    updatedEvent.getAddress() == null || updatedEvent.getAddress().isEmpty() ||
+                    updatedEvent.getDatetime_start() == null ||
+                    updatedEvent.getDatetime_end() == null ||
+                    updatedEvent.getPrice_min() == null || updatedEvent.getPrice_max() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            // Обновление данных о событии
+            existingEvent.setTitle(updatedEvent.getTitle());
+            existingEvent.setDescription(updatedEvent.getDescription());
+            existingEvent.setAddress(updatedEvent.getAddress());
+            existingEvent.setDatetime_start(updatedEvent.getDatetime_start());
+            existingEvent.setDatetime_end(updatedEvent.getDatetime_end());
+            existingEvent.setPrice_min(updatedEvent.getPrice_min());
+            existingEvent.setPrice_max(updatedEvent.getPrice_max());
+
+            existingEvent.setUpdate_datetime(new Date());
+
+            if(updatedEvent.getTag() != null){
+                existingEvent.setTag(updatedEvent.getTag());
+            }
+            if(userRepository.findByEmail(CheckPermission.tokenDecryption(token)[0]).get().getRole().getValue() > 0){
+                existingEvent.setStatus(updatedEvent.getStatus());
+            }
+            // Сохранение обновленного события в базе данных
+            Event updatedEventData = eventRepository.save(existingEvent);
+            return new ResponseEntity<>("Событие создано", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEvent(@PathVariable("id") long id, @RequestHeader String token) {
+        try {
+            Optional<Event> event = eventRepository.findById(id);
+            if(CheckPermission.himself_moderator(userRepository, event.get().getUser(), token)){
+                eventRepository.deleteById(id);
+
+                List<Report> reports = reportRepository.findAllByType(EntityType.event);
+                for (int i = reports.size() - 1; i >= 0; i--) {
+                    if (reports.get(i).getEntityId() == id) {
+                        reportRepository.delete(reports.get(i));
+                    }
+                }
+
+                List<String> photos = photoRepository.findAllByEntityIdAndType(id, EntityType.event);
+                for (String photoId:  photos) {
+                    photoRepository.deleteById(photoId);
+                }
+
+                return new ResponseEntity<>("Событие удалено",HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>("Отказано в доступе",HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

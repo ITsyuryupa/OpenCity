@@ -6,51 +6,36 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import tsurupa.opencity.model.utils.Status;
-import tsurupa.opencity.model.utils.Tag;
+import tsurupa.opencity.model.utils.EntityType;
 
-import java.util.Date;
+import tsurupa.opencity.model.utils.Role;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 
 @Entity
 @Table
 @Data
-public class Event {
-
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     private long id;
 
-    private String title;
-
     private String description;
 
-    private String address;
-
-    private Date datetime_start;
-
-    private Date datetime_end;
-
-    private Double price_min;
-
-    private Double price_max;
-
-    private Tag tag;
-
-    private Date update_datetime;
-
-    private Status status;
-
     @ManyToOne
-    @JoinColumn(name="owner_user_id", nullable=false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @JsonProperty("user")
     public Long getUserId() {
         return user != null ? user.getId() : null;
     }
+
+    private Long entityId;
+
+    private EntityType type;
 
 }
