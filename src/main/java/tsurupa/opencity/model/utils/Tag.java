@@ -7,8 +7,7 @@ package tsurupa.opencity.model.utils;
 public enum Tag {
 
     танцы(0), вокал(1), музыка(2), настолки(3), фестиваль(4), спорт(5),
-    интелектуальное_соревнование(6), культура(7),
-    другое(100);
+    интелектуальное_соревнование(6), культура(7), другое(8);
 
     private final int value;
     private Tag(int value) {
@@ -26,6 +25,10 @@ public enum Tag {
             }
         }
         return null;
+    }
+
+    public static Boolean exist(int value) {
+        return (value >= 0 && value <= 7) || value == 100;
     }
 }
 

@@ -61,7 +61,8 @@ public class CommunityController {
                 newCommunity.setUpdate_datetime(new Date());
                 newCommunity.setUser(userAuthData.get());
                 newCommunity.setStatus(Status.verification);
-                if(community.getTag() == null){
+                if(community.getTag() == null || !Tag.exist(community.getTag().getValue())){
+                    System.out.println(Tag.другое);
                     newCommunity.setTag(Tag.другое);
                 }else{
                     newCommunity.setTag(community.getTag());
@@ -74,6 +75,7 @@ public class CommunityController {
                 return new ResponseEntity<>("Пользователь не авторизован", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+            System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -172,6 +174,8 @@ public class CommunityController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCommunity(@PathVariable("id") long id, @RequestHeader String token) {
