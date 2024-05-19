@@ -151,6 +151,27 @@ public class UserController {
         }
     }
 
+    @GetMapping("/token")
+    public ResponseEntity<Optional<User>> getUserByToken(@RequestHeader("token") String token) {
+        try {
+
+            String[] tokenArr = CheckPermission.tokenDecryption(token);
+            String email = tokenArr[0];
+            String password = tokenArr[1];
+            Optional<User> user = userRepository.findByEmail(email);
+
+            /* check permission, user himmself or moderator and higher */
+            if(!CheckPermission.himself_moderator(userRepository, user, token)){
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+            }
+            return new ResponseEntity<>(user, HttpStatus.OK);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUser(@RequestHeader("token") String token) {
         try {
