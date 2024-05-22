@@ -87,7 +87,7 @@ public class EventController {
                 }
 
                 eventRepository.save(newEvent);
-                return new ResponseEntity<>("Событие создано", HttpStatus.OK);
+                return new ResponseEntity<>(newEvent.getId(), HttpStatus.OK);
 
             } else {
                 return new ResponseEntity<>("Пользователь не авторизован", HttpStatus.BAD_REQUEST);
