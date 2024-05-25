@@ -69,7 +69,7 @@ public class CommunityController {
                 }
 
                 communityRepository.save(newCommunity);
-                return new ResponseEntity<>("Сообщество создано", HttpStatus.OK);
+                return new ResponseEntity<>(newCommunity.getId(), HttpStatus.OK);
 
             } else {
                 return new ResponseEntity<>("Пользователь не авторизован", HttpStatus.BAD_REQUEST);
