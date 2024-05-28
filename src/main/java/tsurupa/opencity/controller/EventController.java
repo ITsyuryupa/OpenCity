@@ -99,7 +99,8 @@ public class EventController {
     }
 
     @GetMapping("/all/status/{status}")
-    public ResponseEntity<?> getAllEventByStatusValue(@PathVariable("status") Integer status, @RequestHeader("token") String token) {
+    public ResponseEntity<?> getAllEventByStatusValue(@PathVariable("status") Integer status,
+                                                      @RequestHeader("token") String token) {
         try {
             if(!CheckPermission.moderator(userRepository, token)){
                 return new ResponseEntity<>("Отказано в доступе", HttpStatus.FORBIDDEN);
@@ -157,7 +158,8 @@ public class EventController {
         }
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateEvent(@PathVariable("id") long id, @RequestBody Event updatedEvent, @RequestHeader String token) {
+    public ResponseEntity<?> updateEvent(@PathVariable("id") long id, @RequestBody Event updatedEvent,
+                                         @RequestHeader String token) {
         Optional<Event> eventData = eventRepository.findById(id);
 
         if (eventData.isPresent() && CheckPermission.himself_moderator(userRepository, eventData.get().getUser(), token)) {

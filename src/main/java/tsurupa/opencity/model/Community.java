@@ -26,8 +26,10 @@ public class Community {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "TEXT")
     private String contact_info;
 
     private Tag tag;

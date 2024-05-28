@@ -1,18 +1,12 @@
 package tsurupa.opencity.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import tsurupa.opencity.model.utils.Status;
 import tsurupa.opencity.model.utils.Tag;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 
 @Entity
 @Table
@@ -26,6 +20,7 @@ public class Event {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String address;

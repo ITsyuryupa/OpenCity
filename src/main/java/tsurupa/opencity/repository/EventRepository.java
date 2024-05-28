@@ -6,7 +6,7 @@ import tsurupa.opencity.model.User;
 import tsurupa.opencity.model.utils.Status;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findAllByStatus(Status status);
@@ -15,3 +15,6 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     List<Event> findAllEventByStatus(Status status);
 }
+
+
+

@@ -112,7 +112,7 @@ public class CheckPermission {
     }
 
     public static boolean moderator(UserRepository userRepository, String token){
-        String[] parts = token.split("\\$");
+        String[] parts = tokenDecryption(token);
 
         // Получение email и пароля
         String email = parts[0];
