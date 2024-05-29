@@ -29,6 +29,9 @@ public class CommunityController {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private ReportRepository reportRepository;
+
     @PostMapping("/create")
     public ResponseEntity<?> createCommunity(@RequestBody Community community, @RequestHeader String token) {
         try {
@@ -183,6 +186,13 @@ public class CommunityController {
             Optional<Community> community = communityRepository.findById(id);
             if(CheckPermission.himself_moderator(userRepository, community.get().getUser(), token)){
                 communityRepository.deleteById(id);
+
+                List<Report> reports = reportRepository.findAllByType(EntityType.community);
+                for (int i = reports.size() - 1; i >= 0; i--) {
+                    if (reports.get(i).getEntityId() == id) {
+                        reportRepository.delete(reports.get(i));
+                    }
+                }
 
                 List<String> photos = photoRepository.findAllByEntityIdAndType(id, EntityType.community);
                 for (String photoId:  photos) {

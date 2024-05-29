@@ -158,7 +158,7 @@ public class ReportController {
 
             return ResponseEntity.status(HttpStatus.OK).body(reports);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при поиске отчетов для события: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при поиске отчетов: " + e.getMessage());
         }
     }
 
