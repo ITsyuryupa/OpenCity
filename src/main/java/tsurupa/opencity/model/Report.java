@@ -23,6 +23,7 @@ public class Report {
     @Column(columnDefinition = "serial")
     private long id;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne
@@ -31,7 +32,7 @@ public class Report {
 
     @JsonProperty("user")
     public Long getUserId() {
-        return user != null ? user.getId() : null;
+        return user != null ? user.getId(): null;
     }
 
     private Long entityId;

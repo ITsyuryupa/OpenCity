@@ -16,6 +16,7 @@ import tsurupa.opencity.repository.UserRepository;
 import tsurupa.opencity.service.CheckPermission;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class UserController {
                 newUser.setEmail(user.getEmail());
                 newUser.setPassword(user.getPassword());
                 newUser.setRole(Role.user);
-                newUser.setRegistationDate(new Date());
+                newUser.setRegistationDate(LocalDateTime.now());
 
                 User _user = userRepository.save(newUser);
                 return new ResponseEntity<>(CheckPermission.generateNewToken(_user), HttpStatus.OK);

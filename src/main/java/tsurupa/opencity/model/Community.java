@@ -1,5 +1,6 @@
 package tsurupa.opencity.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import tsurupa.opencity.model.utils.Status;
 import tsurupa.opencity.model.utils.Tag;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +36,8 @@ public class Community {
 
     private Tag tag;
 
-    private Date update_datetime;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime update_datetime;
 
     private Status status;
 

@@ -187,4 +187,30 @@ public class ReportController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при удалении отчета: " + e.getMessage());
         }
     }
+
+    @DeleteMapping("/community/{reportId}")
+    public ResponseEntity<?> deleteReportCommunityById(@PathVariable("reportId") Long reportId, @RequestHeader("token") String token) {
+        try {
+            // Получаем отчет по его идентификатору
+            Report report = reportRepository.findById(reportId).orElse(null);
+            if (report == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Отчет с указанным ID не найден");
+            }
+
+            // Получаем пользователя из токена
+            User user = userRepository.findByEmail(CheckPermission.tokenDecryption(token)[0]).orElse(null);
+
+            Optional<Community> community = communityRepository.findById(report.getEntityId());
+            // Проверяем, является ли пользователь владельцем события, к которому привязан отчет
+            if (!CheckPermission.himself_moderator(userRepository, community.get().getUser(), token)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Недостаточно прав для удаления отчета");
+            }
+
+            // Удаляем отчет
+            reportRepository.delete(report);
+            return ResponseEntity.status(HttpStatus.OK).body("Отчет успешно удален");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при удалении отчета: " + e.getMessage());
+        }
+    }
 }

@@ -17,6 +17,7 @@ import tsurupa.opencity.repository.ReportRepository;
 import tsurupa.opencity.repository.UserRepository;
 import tsurupa.opencity.service.CheckPermission;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +78,7 @@ public class EventController {
                 newEvent.setDatetime_end(event.getDatetime_end());
                 newEvent.setPrice_min(event.getPrice_min());
                 newEvent.setPrice_max(event.getPrice_max());
-                newEvent.setUpdate_datetime(new Date());
+                newEvent.setUpdate_datetime(LocalDateTime.now());
                 newEvent.setUser(userAuthData.get());
                 newEvent.setStatus(Status.verification);
                 if(event.getTag() == null){
@@ -184,7 +185,7 @@ public class EventController {
             existingEvent.setPrice_min(updatedEvent.getPrice_min());
             existingEvent.setPrice_max(updatedEvent.getPrice_max());
 
-            existingEvent.setUpdate_datetime(new Date());
+            existingEvent.setUpdate_datetime(LocalDateTime.now());
 
             if(updatedEvent.getTag() != null){
                 existingEvent.setTag(updatedEvent.getTag());

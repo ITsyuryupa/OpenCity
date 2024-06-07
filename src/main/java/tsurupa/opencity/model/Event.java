@@ -1,11 +1,14 @@
 package tsurupa.opencity.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import tsurupa.opencity.model.utils.Status;
 import tsurupa.opencity.model.utils.Tag;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -25,9 +28,11 @@ public class Event {
 
     private String address;
 
-    private Date datetime_start;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime datetime_start;
 
-    private Date datetime_end;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime datetime_end;
 
     private Double price_min;
 
@@ -35,7 +40,8 @@ public class Event {
 
     private Tag tag;
 
-    private Date update_datetime;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime update_datetime;
 
     private Status status;
 

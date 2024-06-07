@@ -12,6 +12,7 @@ import tsurupa.opencity.repository.*;
 import tsurupa.opencity.service.CheckPermission;
 
 import java.io.Console;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class CommunityController {
                 newCommunity.setTitle(community.getTitle());
                 newCommunity.setDescription(community.getDescription());
                 newCommunity.setContact_info(community.getContact_info());
-                newCommunity.setUpdate_datetime(new Date());
+                newCommunity.setUpdate_datetime(LocalDateTime.now());
                 newCommunity.setUser(userAuthData.get());
                 newCommunity.setStatus(Status.verification);
                 if(community.getTag() == null || !Tag.exist(community.getTag().getValue())){
@@ -161,7 +162,7 @@ public class CommunityController {
             existingCommunity.setTitle(updatedCommunity.getTitle());
             existingCommunity.setDescription(updatedCommunity.getDescription());
             existingCommunity.setContact_info(updatedCommunity.getContact_info());
-            existingCommunity.setUpdate_datetime(new Date());
+            existingCommunity.setUpdate_datetime(LocalDateTime.now());
             if(updatedCommunity.getTag() != null){
                 existingCommunity.setTag(updatedCommunity.getTag());
             }

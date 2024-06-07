@@ -1,5 +1,6 @@
 package tsurupa.opencity.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -7,6 +8,7 @@ import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +31,8 @@ public class User {
     private String password;
 
     @Column(name = "registation_date")
-    private Date registationDate;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime registationDate;
 
     private Role role;
 
