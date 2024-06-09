@@ -4,7 +4,7 @@ package tsurupa.opencity.model.utils;
 
 public enum EntityType {
 
-    event(0), community(1), place(2);
+    event(0), community(1);
 
     private final int value;
     private EntityType(int value) {

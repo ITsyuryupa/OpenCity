@@ -146,7 +146,7 @@ public class EventController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> getEventById(@PathVariable("id") long id, @RequestHeader String token) {
+    public ResponseEntity<?> getEventById(@PathVariable("id") long id) {
         try {
             Optional<Event> event = eventRepository.findById(id);
 
@@ -192,10 +192,12 @@ public class EventController {
             }
             if(userRepository.findByEmail(CheckPermission.tokenDecryption(token)[0]).get().getRole().getValue() > 0){
                 existingEvent.setStatus(updatedEvent.getStatus());
+            }else{
+                existingEvent.setStatus(Status.verification);
             }
             // Сохранение обновленного события в базе данных
             Event updatedEventData = eventRepository.save(existingEvent);
-            return new ResponseEntity<>("Событие создано", HttpStatus.OK);
+            return new ResponseEntity<>("Событие обновлено", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
