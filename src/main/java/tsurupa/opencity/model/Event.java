@@ -28,10 +28,10 @@ public class Event {
 
     private String address;
 
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private LocalDateTime datetime_start;
 
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private LocalDateTime datetime_end;
 
     private Double price_min;
