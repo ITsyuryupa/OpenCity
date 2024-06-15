@@ -131,7 +131,7 @@ public class CommunityController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> getCommunityById(@PathVariable("id") long id, @RequestHeader String token) {
+    public ResponseEntity<?> getCommunityById(@PathVariable("id") long id) {
         try {
             Optional<Community> community = communityRepository.findById(id);
 
