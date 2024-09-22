@@ -47,7 +47,7 @@
 - Менять роли.
 Админ может давать пользователям модерку и отнимать её. В концепте платформа модерируется самыми лояльными пользователями.
 
-## Preview
+## Preview(YouTubeLink)
 [![Video Title](https://img.youtube.com/vi/2IBjLs5Y9i0/0.jpg)](https://www.youtube.com/watch?v=2IBjLs5Y9i0)
 
 ### Architecture
